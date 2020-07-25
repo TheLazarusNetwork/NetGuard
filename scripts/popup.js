@@ -3,3 +3,7 @@ chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
     var currentDomain = tabs[0].url;
     document.getElementById("title").innerHTML = currentDomain;
 });
+
+$("#checkPage").click(function() {
+    alert("Handler for .click() called.");
+  });
