@@ -20,21 +20,25 @@
 	"content_scripts": [
 		{
 			"matches": [
-				"*://lazarus.network/*"
+				"<all_urls>"
 			],
 			"js": [
-				"scripts/events.js"
+				"scripts/jquery-3.5.1.js",
+				"scripts/content_scripts.js"
 			]
 		}
 	],
 
 	"permissions": [
+		"tabs",
 		"activeTab"
 	],
 
 	"background": {
 		"scripts": [
-			"scripts/events.js"
-		]
+			"scripts/jquery-3.5.1.js",
+			"scripts/background.js"
+		],
+		"persistent": false
 	}
 }
