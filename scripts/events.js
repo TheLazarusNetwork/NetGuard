@@ -1,0 +1,1 @@
+var currentURL = "mydomain.com";
