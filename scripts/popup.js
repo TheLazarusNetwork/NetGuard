@@ -25,17 +25,31 @@ function processDomainStatus(response){
   }
 }
 
+function refreshApp(domainName){
+  $.ajax({
+    type: "GET",
+    url: "https://netguardapi.herokuapp.com/api/getNetGuard/",
+    data: {
+      'domain': domainName
+    }
+  }).done(function(response){
+    processDomainStatus(response);
+  });
+}
+
 function voteForThisDomain(type){
   domainName = $("#domain").val();
   $.ajax({
     type: "POST",
     url: "https://netguardapi.herokuapp.com/api/createNetGuard/",
-    data: {
+    data: JSON.stringify({
       'domain': domainName,
       'content': type
-    }
+    }),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
   }).done(function(response){
-    processDomainStatus(response);
+    refreshApp(domainName);
   });
 }
 
@@ -47,7 +61,6 @@ function loadApp(domainName){
       'domain': domainName
     }
   }).done(function(response){
-
     $('.loader').animate({
       opacity: 0
     }, 500, function(){
@@ -104,23 +117,39 @@ $('#back-error-section').click(function(){
   }, 300);
 });
 
+function incrementSafeCount(){
+  safeCount = $('#safe-count').text();
+  safeCount = safeCount + 1;
+  $('#safe-count').text(safeCount);
+}
+
+function incrementNotSafeCount(){
+  safeCount = $('#not-safe-count').text();
+  safeCount = safeCount + 1;
+  $('#safe-count').text(safeCount);
+}
 
 $('#cta-safe').click(function(){
   voteForThisDomain('safe');
+  incrementSafeCount();
 });
 
 $('#cta-spam').click(function(){
   voteForThisDomain('spam');
+  incrementNotSafeCount();
 });
 
 $('#cta-adv').click(function(){
   voteForThisDomain('adv');
+  incrementNotSafeCount();
 });
 
 $('#cta-spyware').click(function(){
   voteForThisDomain('spyware');
+  incrementNotSafeCount();
 });
 
 $('#cta-malware').click(function(){
   voteForThisDomain('malware');
+  incrementNotSafeCount();
 });
