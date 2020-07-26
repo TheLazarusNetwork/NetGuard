@@ -30,6 +30,9 @@
     box-shadow: 0 0 0 2px #aaa inset;
   }
 }
+.bg-orb.not-safe{
+  background: radial-gradient(circle at 50% 33%, #d85142 5%, #C0392B 23%, #92291e 50%, #5d1810 100%);
+}
 
 .floating-bar{
   position: absolute;
@@ -98,25 +101,8 @@
   width: 100%;
 }
 
-.button-grid{
-  td{
-    vertical-align: top;
-  }
-
-  button{
-    width: 100%;
-    padding: 10px 20px;
-    margin-bottom: 10px;
-    color: #fff;
-    border: 0;
-    border-radius: 4px;
-  }
-  .safe{
-    background-color: #8EC44E;
-  }
-  .danger{
-    background-color: #C0392B;
-  }
+.align-top{
+  vertical-align: top;
 }
 
 .footer{
@@ -137,5 +123,19 @@
 }
 
 .padding-bottom{
-  padding-bottom: 50px;
+  padding-bottom: 40px;
+}
+
+.back-button{
+  cursor: pointer;
+  td{
+    vertical-align: middle;
+    font-size: 20px;
+    color: #666;
+     span{
+       display: inline-block;
+       line-height: 30px;
+       margin: 0;
+     }
+  }
 }
