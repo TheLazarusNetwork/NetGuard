@@ -36,13 +36,14 @@ function processDomainStatus(response){
 
   notSafe = spam + adv + spyware + malware;
 
+  $('#safe-count').text(safe);
+  $('#not-safe-count').text(notSafe);
+
   if(safe >= notSafe) {
     markDomainSafe();
-    $('#safe-count').text(safe);
   }
   else {
     markDomainNotSafe();
-    $('#not-safe-count').text(notSafe);
   }
 }
 
