@@ -3,26 +3,32 @@ function getDomainName(tabURL){
 	return tabURL.hostname;
 }
 
+function markDomainSafe(safe){
+  $('#net-guard-title').text('You Are Safe');
+  $('.bg-orb').removeClass('not-safe');
+  $('#safety-icon').removeClass('icon-exclamation').addClass('icon-check-mark');
+
+  if(0 < safe) incrementSafeCount();
+}
+
+function markDomainNotSafe(){
+  $('#net-guard-title').text('Not Safe');
+  $('.bg-orb').addClass('not-safe');
+  $('#safety-icon').removeClass('icon-check-mark').addClass('icon-exclamation');
+  incrementNotSafeCount();
+}
+
 function processDomainStatus(response){
-  safe = response["safe"];
-  spam = response["spam"];
-  adv = response["adv"];
-  spyware = response["spyware"];
-  malware = response["malware"];
+  safe = parseInt(response["safe"]);
+  spam = parseInt(response["spam"]);
+  adv = parseInt(response["adv"]);
+  spyware = parseInt(response["spyware"]);
+  malware = parseInt(response["malware"]);
 
   notSafe = spam + adv + spyware + malware;
 
-  if(safe > notSafe){
-    $('#net-guard-title').text('You Are Safe');
-    $('#safe-count').text(safe);
-    $('.bg-orb').removeClass('not-safe');
-    $('#safety-icon').removeClass('icon-exclamation').addClass('icon-check-mark');
-  } else {
-    $('#net-guard-title').text('Not Safe');
-    $('#not-safe-count').text(notSafe);
-    $('.bg-orb').addClass('not-safe');
-    $('#safety-icon').removeClass('icon-check-mark').addClass('icon-exclamation');
-  }
+  if(safe >= notSafe) markDomainSafe(safe);
+  else markDomainNotSafe();
 }
 
 function refreshApp(domainName){
@@ -33,6 +39,8 @@ function refreshApp(domainName){
       'domain': domainName
     }
   }).done(function(response){
+    console.log(response);
+
     processDomainStatus(response);
   });
 }
@@ -49,7 +57,12 @@ function voteForThisDomain(type){
     contentType: "application/json; charset=utf-8",
     dataType: "json",
   }).done(function(response){
-    refreshApp(domainName);
+    if('safe' == type) {
+      markDomainSafe();
+    } else {
+      resetAppUI();
+      markDomainNotSafe();
+    }
   });
 }
 
@@ -61,6 +74,8 @@ function loadApp(domainName){
       'domain': domainName
     }
   }).done(function(response){
+    console.log(response);
+
     $('.loader').animate({
       opacity: 0
     }, 500, function(){
@@ -104,52 +119,51 @@ $("#danger").click(function(){
 });
 
 $('#back-error-section').click(function(){
+  resetAppUI();
+});
+
+function resetAppUI(){
   $('#security-status').animate({
     height: 290
   }, 300);
   $('#user-interaction').animate({
     height: 120
   }, 300);
-
-
   $('#error-selection').animate({
     height: 0
   }, 300);
-});
+}
 
 function incrementSafeCount(){
   safeCount = $('#safe-count').text();
-  safeCount = safeCount + 1;
+  safeCount = parseInt(safeCount) + 1;
   $('#safe-count').text(safeCount);
+  console.log('Marked as safe');
 }
 
 function incrementNotSafeCount(){
-  safeCount = $('#not-safe-count').text();
-  safeCount = safeCount + 1;
-  $('#safe-count').text(safeCount);
+  notSafeCount = $('#not-safe-count').text();
+  notSafeCount = parseInt(notSafeCount) + 1;
+  $('#not-safe-count').text(notSafeCount);
+  console.log('Marked as not safe');
 }
 
 $('#cta-safe').click(function(){
   voteForThisDomain('safe');
-  incrementSafeCount();
 });
 
 $('#cta-spam').click(function(){
   voteForThisDomain('spam');
-  incrementNotSafeCount();
 });
 
 $('#cta-adv').click(function(){
   voteForThisDomain('adv');
-  incrementNotSafeCount();
 });
 
 $('#cta-spyware').click(function(){
   voteForThisDomain('spyware');
-  incrementNotSafeCount();
 });
 
 $('#cta-malware').click(function(){
   voteForThisDomain('malware');
-  incrementNotSafeCount();
 });
