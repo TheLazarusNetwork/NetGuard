@@ -26,6 +26,7 @@ function processDomainStatus(response){
 }
 
 function voteForThisDomain(type){
+  domainName = $("#domain").val();
   $.ajax({
     type: "POST",
     url: "https://netguardapi.herokuapp.com/api/createNetGuard/",
@@ -102,6 +103,7 @@ $('#back-error-section').click(function(){
     height: 0
   }, 300);
 });
+
 
 $('#cta-safe').click(function(){
   voteForThisDomain('safe');
