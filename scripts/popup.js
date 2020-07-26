@@ -3,19 +3,28 @@ function getDomainName(tabURL){
 	return tabURL.hostname;
 }
 
-function markDomainSafe(safe){
+function markDomainSafe(){
   $('#net-guard-title').text('You Are Safe');
   $('.bg-orb').removeClass('not-safe');
   $('#safety-icon').removeClass('icon-exclamation').addClass('icon-check-mark');
-
-  if(0 < safe) incrementSafeCount();
 }
 
 function markDomainNotSafe(){
   $('#net-guard-title').text('Not Safe');
   $('.bg-orb').addClass('not-safe');
   $('#safety-icon').removeClass('icon-check-mark').addClass('icon-exclamation');
-  incrementNotSafeCount();
+}
+
+function refreshDomainStatus(response){
+  safe = parseInt($('#safe-count').text());
+  notSafe = parseInt($('#not-safe-count').text());
+
+  if(safe >= notSafe) {
+    markDomainSafe();
+  }
+  else {
+    markDomainNotSafe();
+  }
 }
 
 function processDomainStatus(response){
@@ -27,8 +36,14 @@ function processDomainStatus(response){
 
   notSafe = spam + adv + spyware + malware;
 
-  if(safe >= notSafe) markDomainSafe(safe);
-  else markDomainNotSafe();
+  if(safe >= notSafe) {
+    markDomainSafe();
+    incrementSafeCount();
+  }
+  else {
+    markDomainNotSafe();
+    incrementNotSafeCount();
+  }
 }
 
 function refreshApp(domainName){
@@ -40,8 +55,6 @@ function refreshApp(domainName){
     }
   }).done(function(response){
     console.log(response);
-
-    processDomainStatus(response);
   });
 }
 
@@ -57,12 +70,16 @@ function voteForThisDomain(type){
     contentType: "application/json; charset=utf-8",
     dataType: "json",
   }).done(function(response){
+    refreshApp(domainName);
+
     if('safe' == type) {
-      markDomainSafe();
+      incrementSafeCount();
     } else {
       resetAppUI();
-      markDomainNotSafe();
+      incrementNotSafeCount();
     }
+
+    refreshDomainStatus();
   });
 }
 
