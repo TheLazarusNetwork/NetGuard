@@ -38,11 +38,11 @@ function processDomainStatus(response){
 
   if(safe >= notSafe) {
     markDomainSafe();
-    incrementSafeCount();
+    $('#safe-count').text(safe);
   }
   else {
     markDomainNotSafe();
-    incrementNotSafeCount();
+    $('#not-safe-count').text(notSafe);
   }
 }
 
